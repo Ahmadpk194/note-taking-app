@@ -1,23 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import Count from "./components/Count";
+import CreateArea from "./components/CreateArea";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import Note from "./components/Note";
 
-function App() {
+function App(props) {
+  const [notes, setNotes] = useState([]);
+  const [date, setDate] = useState([]);
+
+  function addNote(newNote) {
+    setNotes((prevValue) => {
+      return [...prevValue, newNote];
+    });
+  }
+
+  function deleteNote(id) {
+    setNotes((prevValue) => {
+      return [...prevValue.filter((note, i) => i !== id)];
+    });
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
+      <Count
+        count={
+          notes.length === 0
+            ? "Empty"
+            : `Showing: ${notes.length} Notes in Database`
+        }
+      />
+      <CreateArea onAdd={addNote} addDate={setDate} />{" "}
+      {notes.map((note, i) => (
+        <Note
+          key={i}
+          id={i}
+          title={note.title}
+          content={note.content}
+          onDelete={deleteNote}
+          date={date}
+        />
+      ))}
+      <Footer />
     </div>
   );
 }
